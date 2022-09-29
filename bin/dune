@@ -1,4 +1,3 @@
-(executable
- (public_name compiler)
- (name main)
- (libraries compiler))
+(tests
+ (names test)
+ (libraries compiler alcotest))

@@ -1,2 +1,4 @@
 (library
- (name compiler))
+ (name compiler)
+ (modules expr interp typecheck env)
+ (libraries fmt))
