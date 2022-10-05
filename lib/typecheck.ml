@@ -29,3 +29,7 @@ let rec typecheck : tenv -> expr -> t option =
       let* t1 = typecheck tenv e1 in
       let* t2 = typecheck tenv e2 in
       typecheck_op2 op t1 t2
+
+let pp_t : t Fmt.t =
+ fun fmt t ->
+  match t with BoolT -> Fmt.string fmt "bool" | NatT -> Fmt.string fmt "nat"

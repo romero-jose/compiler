@@ -43,6 +43,7 @@ let parse_tests =
   let test_nat () = expect (NatE 42) "42" in
   let test_bool_true () = expect (BoolE true) "true" in
   let test_bool_false () = expect (BoolE false) "false" in
+  let test_var () = expect (VarE "some-var") "some-var" in
   let test_let () =
     expect
       (LetE ("x", NatE 42, Op2E (Minus, VarE "x", NatE 40)))
@@ -64,6 +65,7 @@ let parse_tests =
       test_case "a nat" `Quick test_nat;
       test_case "a bool that is true" `Quick test_bool_true;
       test_case "a bool that is false" `Quick test_bool_false;
+      test_case "a variable" `Quick test_var;
       test_case "a let expression" `Quick test_let;
       test_case "a not expression" `Quick test_op1_not;
       test_case "a plus expression" `Quick test_op2_plus;
@@ -74,11 +76,6 @@ let parse_tests =
 
 let typecheck_tests =
   let open Compiler.Typecheck in
-  let pp_t : t Fmt.t =
-   fun fmt t ->
-    match t with BoolT -> Fmt.string fmt "bool" | NatT -> Fmt.string fmt "nat"
-  in
-
   let pp_t_opt : t option Fmt.t =
    fun fmt t -> match t with Some v -> pp_t fmt v | None -> Fmt.string fmt ""
   in
