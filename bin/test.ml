@@ -34,6 +34,44 @@ let interp_tests =
       test_case "a or expression" `Quick test_op2_or;
     ] )
 
+let parse_tests =
+  let open Compiler.Parse in
+  let expr : expr testable = testable pp_expr ( = ) in
+  let expect (expected : expr) (input : string) =
+    (check expr) "same expr" expected (parse_string input)
+  in
+  let test_nat () = expect (NatE 42) "42" in
+  let test_bool_true () = expect (BoolE true) "true" in
+  let test_bool_false () = expect (BoolE false) "false" in
+  let test_let () =
+    expect
+      (LetE ("x", NatE 42, Op2E (Minus, VarE "x", NatE 40)))
+      "(let (x 42) (- x 40))"
+  in
+  let test_op1_not () = expect (Op1E (Not, BoolE true)) "(not true)" in
+  let test_op2_plus () = expect (Op2E (Plus, NatE 4, NatE 18)) "(+ 4 18)" in
+  let test_op2_minus () =
+    expect (Op2E (Minus, Op2E (Plus, NatE 5, NatE 3), NatE 3)) "(- (+ 5 3) 3)"
+  in
+  let test_op2_or () =
+    expect (Op2E (Or, BoolE false, BoolE true)) "(or false true)"
+  in
+  let test_invalid_sum () =
+    expect (Op2E (Plus, NatE 1, BoolE false)) "(+ 1 false)"
+  in
+  ( "parse",
+    [
+      test_case "a nat" `Quick test_nat;
+      test_case "a bool that is true" `Quick test_bool_true;
+      test_case "a bool that is false" `Quick test_bool_false;
+      test_case "a let expression" `Quick test_let;
+      test_case "a not expression" `Quick test_op1_not;
+      test_case "a plus expression" `Quick test_op2_plus;
+      test_case "a minus expression" `Quick test_op2_minus;
+      test_case "a or expression" `Quick test_op2_or;
+      test_case "an invalid sum" `Quick test_invalid_sum;
+    ] )
+
 let typecheck_tests =
   let open Compiler.Typecheck in
   let pp_t : t Fmt.t =
@@ -77,4 +115,4 @@ let typecheck_tests =
       test_case "an invalid sum" `Quick test_invalid_sum;
     ] )
 
-let () = run "Compiler" [ interp_tests; typecheck_tests ]
+let () = run "Compiler" [ interp_tests; typecheck_tests; parse_tests ]
