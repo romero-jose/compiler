@@ -16,7 +16,7 @@ let rec interp : value env -> expr -> value =
   | VarE id -> lookup id env
   | LetE (name, e1, e2) ->
       let value = interp env e1 in
-      interp ((name, value) :: env) e2
+      interp (extend name value env) e2
   | Op1E (op, e1) -> (
       match (op, interp env e1) with
       | Not, BoolV b -> BoolV (not b)

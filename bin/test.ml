@@ -5,7 +5,7 @@ let interp_tests =
   let open Compiler.Interp in
   let value : value testable = testable pp_value ( = ) in
   let expect (expected : value) (input : expr) =
-    (check value) "same value" expected (interp [] input)
+    (check value) "same value" expected (interp (Compiler.Env.init()) input)
   in
   let test_nat () = expect (NatV 42) (NatE 42) in
   let test_bool_true () = expect (BoolV true) (BoolE true) in
@@ -81,7 +81,7 @@ let typecheck_tests =
   in
   let t_opt : t option testable = testable pp_t_opt ( = ) in
   let expect (expected : t option) (e : expr) =
-    (check t_opt) "same value" expected (typecheck [] e)
+    (check t_opt) "same value" expected (typecheck (Compiler.Env.init()) e)
   in
   let test_nat () = expect (Some NatT) (NatE 42) in
   let test_bool_true () = expect (Some BoolT) (BoolE true) in

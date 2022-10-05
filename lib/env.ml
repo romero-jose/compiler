@@ -1,5 +1,7 @@
 type 'a env = (string * 'a) list
 
+let init : unit -> 'a env = fun _ -> []
+
 let lookup : string -> 'a env -> 'a =
  fun id env ->
   try List.assoc id env
